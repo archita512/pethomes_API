@@ -117,7 +117,7 @@ function getMainCatList()
     }
 
     // Store email in session
-    $_SESSION['email'] = $email;
+    $_SESSION['admin'] = $email;
     $_SESSION['user_id'] = $user['id']; // Also store user ID if available
 
     // Generate token and update user record
