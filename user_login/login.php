@@ -107,12 +107,12 @@ function getMainCatList()
     if (password_get_info($user['password'])['algo'] === null) {
         // Password is stored as plain text - compare directly
         if ($password !== $user['password']) {
-            error422('Invalid password - plain text comparison');
+            error422('Invalid password');
         }
     } else {
         // Password is hashed - use password_verify
         if (!password_verify($password, $user['password'])) {
-            error422('Invalid password - hash verification failed');
+            error422('Invalid password');
         }
     }
 
