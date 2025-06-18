@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 // Clear any previously set headers or outputs
@@ -76,42 +77,17 @@ function getMainCatList()
 {
 
     global $cnn;
-    $current_date = date('Y-m-d');
-    // $status = isset($_POST['status']) ? mysqli_real_escape_string($cnn, $_POST['status']) : '';
-    $cat_id = isset($_POST['cat_id']) ? mysqli_real_escape_string($cnn, $_POST['cat_id']) : '';
-
-
-
-    // Check if the search keyword is empty
-    if (empty($cat_id)) {
-        error422('Please enter Category ID LIKE cat_id'); // Call error422 function with the new message
-    }
-
-    if(isset($_SESSION['admin'])){
-        $admin_email = $_SESSION['admin'];
-        $query_user =  mysqli_query($cnn,"SELECT * FROM user_login WHERE email='$admin_email'");
-        $row_user = mysqli_fetch_assoc($query_user);
-        $user_id = $row_user['id'];
-    }else{
-        $user_id = 0;
-    }
-    
-    $query = "SELECT c.name AS cat_name,p.name AS pet_catgeory,a.name,a.image,a.des,a.price,a.key,a.value,a.id FROM accessories AS a JOIN acce_catgeory AS c ON a.cat_id=c.id JOIN category AS p ON a.pet_cat=p.id WHERE a.pet_cat='$cat_id' AND a.status='Active'";
+   
+    $query = "SELECT * FROM offer WHERE status='Active' ORDER BY id DESC";
     $query_run = mysqli_query($cnn, $query);
 
     if ($query_run) {
         if (mysqli_num_rows($query_run) > 0) {
             $res = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
-            foreach ($res as &$pets) {
-                // Check if the pet is in the user's wishlist
-               $wishlist_query = mysqli_query($cnn, "SELECT * FROM acc_wishlist WHERE a_id = '{$pets['id']}' AND u_id = '$user_id'");
-                $is_wishlisted = mysqli_num_rows($wishlist_query) > 0; // True if the pet is in the wishlist
-               // Set wishlist status
-               $pets['wishlist'] = $is_wishlisted ? 1 : 0;
-           }
+           
             $data = [
                 'success' => true,
-                'message' => 'Accessories List Fetched Successfully',
+                'message' => 'Offer List Fetched Successfully',
                 'data' => $res
             ];
             header("HTTP/1.0 200 OK");
@@ -119,9 +95,9 @@ function getMainCatList()
         } else {
             $data = [
                 'success' => false,
-                'message' => 'No Accessories Found',
+                'message' => 'No Offer Found',
             ];
-            header("HTTP/1.0 404 No Accessories Found");
+            header("HTTP/1.0 404 No Offer Found");
             return json_encode($data);
         }
     } else {
